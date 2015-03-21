@@ -10,7 +10,10 @@ import Foundation
 
 class Action: Mappable {
 	
+	var id: Int!
 	var name: String!
+	var power: Int!
+	var price: Int!
 	
 	required init?(_ map: Map) {
 		mapping(map)
@@ -18,7 +21,10 @@ class Action: Mappable {
 	
 	// Mappable
 	func mapping(map: Map) {
+		id <- map["id"]
 		name <- map["name"]
+		power <- map["power"]
+		price <- map["price"]
 	}
 	
 }
