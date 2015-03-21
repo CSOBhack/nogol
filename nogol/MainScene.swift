@@ -51,12 +51,16 @@ class MainScene: SCNScene {
 	
 	func setupScene() {
 		
-		let camDistance: Float = 18
+		let camDistance: Float = 14
+		
+		let cameraGlobe = SCNNode()
+		cameraGlobe.eulerAngles = SCNVector3(x: Float(M_PI_4), y: 0, z: 0)
+		self.rootNode.addChildNode(cameraGlobe)
 		
 		let cameraNode = SCNNode()
 		cameraNode.camera = SCNCamera()
 		cameraNode.position = SCNVector3(x: 0, y: 0, z: camDistance)
-		self.rootNode.addChildNode(cameraNode)
+		cameraGlobe.addChildNode(cameraNode)
 		
 		let lightNode = SCNNode()
 		lightNode.light = SCNLight()

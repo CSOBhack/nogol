@@ -16,9 +16,7 @@ class _API {
 	
 	// MARK: Init
 	
-	private init() {
-		
-	}
+	private init() { }
 	
 	// MARK: Endpoints
 	
