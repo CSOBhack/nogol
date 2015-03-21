@@ -13,15 +13,25 @@ import SceneKit
 class ViewController: UIViewController {
 
     override func viewDidLoad() {
-        super.viewDidLoad()
+		super.viewDidLoad()
+		
+		let label = UILabel()
+		label.frame = CGRect(x: 0, y: 0, width: self.view.frame.size.width, height: 44)
+		label.textAlignment = .Center
+		label.text = ""
+		self.view.addSubview(label)
+		
+		// ----
 		
 		let scnView = self.view as! SCNView
 		
-		let scene = MainScene(view: scnView)
+		let scene = MainScene(view: scnView) { newValue in
+			label.text = newValue
+		}
 		
 		scnView.scene = scene
 		scnView.allowsCameraControl = true
-		scnView.showsStatistics = true
+		scnView.showsStatistics = false
 		scnView.backgroundColor = UIColor.whiteColor()
 		
         let tapGesture = UITapGestureRecognizer(target: scene, action: "handleTap:")

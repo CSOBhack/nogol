@@ -25,9 +25,12 @@ class MainScene: SCNScene {
 	let greenMaterial: SCNMaterial
 	let blueMaterial: SCNMaterial
 	
-	init(view: SCNView) {
+	let labelChangeCallback: ((String) -> ())
+	
+	init(view: SCNView, labelChangeCallback: ((String) -> ())) {
 		
 		self.view = view
+		self.labelChangeCallback = labelChangeCallback
 		
 		self.redMaterial = SCNMaterial()
 		self.redMaterial.diffuse.contents = UIColor.redColor()
@@ -103,7 +106,7 @@ class MainScene: SCNScene {
 				let point = Mercator.pointForCoord(coord)
 				
 				let size = Float(node.active_users)/Float(1E5)
-				let nodeGeometry = SCNCylinder(radius: 0.1, height: 0.2)
+				let nodeGeometry = SCNCylinder(radius: 0.15, height: 0.2)
 				let nodeNode = SCNNode(geometry: nodeGeometry)
 				nodeNode.name = "node-\(node.id)"
 				nodeNode.scale = SCNVector3(x: 1, y: size, z: 1)
@@ -223,6 +226,18 @@ class MainScene: SCNScene {
 		}
 		
 	}
+	
+	// MARK: - Object getting
+	
+	func getNode(id: Int) -> Node? {
+		let filtered = self.nodes.filter({ $0.id == id })
+		return filtered.first
+	}
+	
+	func getActor(id: Int) -> Actor? {
+		let filtered = self.actors.filter({ $0.id == id })
+		return filtered.first
+	}
 
 	// MARK: - Tap
 	
@@ -232,9 +247,12 @@ class MainScene: SCNScene {
 			for result in hitResults {
 				if let name = result.node.name {
 					if name.hasPrefix("node") {
-						println("node tapped")
+						let node = getNode(name.componentsSeparatedByString("-").last!.toInt()!)!
+						self.labelChangeCallback("Node: \(node.venue_name)")
 					} else if name.hasPrefix("actor") {
-						println("actor tapped")
+						let actor = getActor(name.componentsSeparatedByString("-").last!.toInt()!)!
+						let actorType = actor.type == .admin ? "Admin" : "Hacker"
+						self.labelChangeCallback("\(actorType): \(actor.name)")
 					}
 				}
 			}
