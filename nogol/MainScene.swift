@@ -127,9 +127,12 @@ class MainScene: SCNScene {
 			
 			for (i, actor) in enumerate(actors) {
 				
-				let actorGeometry = SCNSphere(radius: 0.5)
+				let scale = Float(actor.current_action_points)
+				
+				let actorGeometry = SCNSphere(radius: 0.05)
 				let actorNode = SCNNode(geometry: actorGeometry)
 				actorNode.name = "actor-\(actor.id)"
+				actorNode.scale = SCNVector3(x: scale, y: scale, z: scale)
 				
 				let point = Utilities.calcCenter(i, total: total, outRadius: 0.5, inRadius: 6, start: M_PI)
 				actorNode.position = SCNVector3(x: point.x, y: point.y, z: 0)
@@ -159,10 +162,13 @@ class MainScene: SCNScene {
 					
 					let nodeNode = self.rootNode.childNodeWithName("node-\(node.id)", recursively: false)
 					
+					let scale = Float(min(1, event.action.power))
+					
 					let messageGeometry = SCNSphere(radius: 0.1)
 					let messageNode = SCNNode(geometry: messageGeometry)
 					messageNode.name = "message-\(event.id)"
 					messageNode.position = actorNode!.position
+					messageNode.scale = SCNVector3(x: scale, y: scale, z: scale)
 					messageNode.runAction(SCNAction.sequence([SCNAction.waitForDuration(Double(i)*0.33), SCNAction.moveTo(nodeNode!.position, duration: 2), SCNAction.removeFromParentNode()]))
 					
 					if contains(self.badEvents, event.action.name) {
@@ -198,7 +204,17 @@ class MainScene: SCNScene {
 					
 				}
 				
+				let scale = Float(event.actor.current_action_points)
+				let delay: Int64 = Int64(Double(i)*0.33)
+				dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (delay * Int64(NSEC_PER_SEC))), dispatch_get_main_queue()) {
+					SCNTransaction.begin()
+					SCNTransaction.setAnimationDuration(0.33)
+					actorNode!.scale = SCNVector3(x: scale, y: scale, z: scale)
+					SCNTransaction.commit()
+				}
+				
 			}
+			
 			
 			let delay: Int64 = Int64(Double(count(response.events))*0.33)
 			dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (delay * Int64(NSEC_PER_SEC))), dispatch_get_main_queue()) {
